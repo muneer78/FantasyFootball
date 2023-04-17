@@ -10,6 +10,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/CBSSportsSOS.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/FBSchedulesSOS.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/FINALSOS.csv">
           <value>
             <Attribute>
@@ -39,6 +53,13 @@
           </value>
         </entry>
         <entry key="/Team Mappingcsv.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/TeamDict.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
