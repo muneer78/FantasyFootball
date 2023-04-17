@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 dfath = pd.read_csv('AthleticOLine.csv', usecols=['Team', 'Rank'])
 dfcbs = pd.read_csv('CBSSportsSOS.csv', usecols=['Team', 'CBSRank'])
