@@ -11,7 +11,7 @@ dfcbs = pd.read_csv('CBSSportsSOS.csv', usecols=['Team', 'CBSRank'])
 dffbs = pd.read_csv('FBSchedulesSOS.csv', usecols=['TEAM', 'FBRank'])
 dfpfnsos = pd.read_csv('PFNSOS.csv', usecols=['Team', 'PFNSOSRank'])
 dfdk = pd.read_csv('DKSOS.csv', usecols=['Team', 'DKRank'])
-dfplayer = pd.read_csv('Player List.csv', usecols=['RK', 'PLAYER NAME', 'TEAM', 'POS'])
+dfplayer = pd.read_csv('Player List.csv', usecols=['Rank', 'Player', 'Team', 'POS'])
 teammap = pd.read_csv('TeamDict.csv', index_col=0, squeeze=True).to_dict()
 
 dataframes = [dfpff, dfpfn, dfcbs, dfcbsoline, dffbs, dfpfnsos, dfdk, dfplayer]
@@ -48,7 +48,7 @@ df_sos[cols2] = df_sos[cols2].apply(pd.to_numeric, errors='coerce')
 df_sos['Sosrank'] = df_sos.iloc[:, 1:3].mean(axis=1, numeric_only=True)
 
 df_players = dfplayer.merge(df_oline[['Team', 'Olinerank']], on=['Team'], how="left").merge(df_sos[['Team', 'Sosrank']], on=['Team'], how="left")
-df_players = df_players.rename(columns = {'Rk':'ADP', 'Player Name':'Name', 'Pos':'Position'})
+df_players = df_players.rename(columns = {'Rank':'ADP', 'Player':'Name', 'Pos':'Position'})
 
 cols3 = ['ADP', "Olinerank", 'Sosrank']
 df_players[cols3] = df_players[cols3].apply(pd.to_numeric, errors='coerce')
