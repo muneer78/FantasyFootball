@@ -35,18 +35,17 @@ for index in range(len(dflist)):
 
 df_oline = dfpfn.merge(dfpff[['Team', 'Pffrank']], on=["Team"], how="left").merge(dfcbsoline[['Team', 'Cbsolinerank']], on=["Team"], how="left")
 df_oline = df_oline.fillna(value=0)
-print(df_oline)
 
 cols = df_oline.columns.drop('Team')
 df_oline[cols] = df_oline[cols].apply(pd.to_numeric, errors='coerce')
-df_oline['Olinerank'] = df_oline.iloc[:, 1:3].mean(axis=1)
+df_oline['Olinerank'] = df_oline.iloc[:, 1:3].mean(axis=1, numeric_only=True)
 
 df_sos = dfcbs.merge(dffbs[['Team', 'Fbrank']], on=["Team"], how="left").merge(dfdk[['Team', 'Dkrank']], on=["Team"], how="left")
 df_sos = df_sos.fillna(value=0)
 
 cols2 = df_sos.columns.drop('Team')
 df_sos[cols2] = df_sos[cols2].apply(pd.to_numeric, errors='coerce')
-df_sos['Sosrank'] = df_sos.iloc[:, 1:3].mean(axis=1)
+df_sos['Sosrank'] = df_sos.iloc[:, 1:3].mean(axis=1, numeric_only=True)
 
 df_players = dfplayer.merge(df_oline[['Team', 'Olinerank']], on=['Team'], how="left").merge(df_sos[['Team', 'Sosrank']], on=['Team'], how="left")
 df_players = df_players.rename(columns = {'Rk':'ADP', 'Player Name':'Name', 'Pos':'Position'})
