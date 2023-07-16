@@ -1,9 +1,14 @@
+"""
+Use pandas to create and work with dataframes
+"""
 import pandas as pd
 
 
-# Define the function to convert column headers to proper case
-def convert_column_headers_to_proper_case(df):
-    df.columns = [column.title() for column in df.columns]
+def convert_column_headers_to_proper_case(df_temp):
+    """
+    Define the function to convert column headers to proper case
+    """
+    df_temp.columns = [column.title() for column in df_temp.columns]
 
 
 dfpff = pd.read_csv("PFFOLine.csv", usecols=["Team", "PFFRank"])
@@ -14,6 +19,7 @@ dffbs = pd.read_csv("FBSchedulesSOS.csv", usecols=["TEAM", "FBRank"])
 dfpfnsos = pd.read_csv("PFNSOS.csv", usecols=["Team", "PFNSOSRank"])
 dfdk = pd.read_csv("DKSOS.csv", usecols=["Team", "DKRank"])
 dfplayer = pd.read_csv("Player List.csv", usecols=["Rank", "Player", "Team", "POS"])
+# noinspection PyArgumentList
 teammap = pd.read_csv("TeamDict.csv", index_col=0, squeeze=True).to_dict()
 
 dataframes = [dfpff, dfpfn, dfcbs, dfcbsoline, dffbs, dfpfnsos, dfdk, dfplayer]
@@ -30,10 +36,10 @@ dfpfnsos["Team"] = dfpfnsos["Team"].map(lambda x: teammap.get(x, x))
 dfdk["Team"] = dfdk["Team"].map(lambda x: teammap.get(x, x))
 
 dflist = [dfplayer]
-for index in range(len(dflist)):
-    dflist[index].replace(r"[^\w\s]|_\*", "", regex=True, inplace=True)
-    dflist[index].replace(" Jr", "", regex=True, inplace=True)
-    dflist[index].replace(" II", "", regex=True, inplace=True)
+for index, df in enumerate(dflist):
+    df.replace(r"[^\w\s]|_\*", "", regex=True, inplace=True)
+    df.replace(" Jr", "", regex=True, inplace=True)
+    df.replace(" II", "", regex=True, inplace=True)
 
 df_oline = dfpfn.merge(dfpff[["Team", "Pffrank"]], on=["Team"], how="left").merge(
     dfcbsoline[["Team", "Cbsolinerank"]], on=["Team"], how="left"
