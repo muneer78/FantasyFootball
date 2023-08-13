@@ -2,7 +2,7 @@
 Use pandas to create and work with dataframes
 """
 import pandas as pd
-
+import pandas_log
 
 def convert_column_headers_to_proper_case(df_temp):
     """
@@ -19,10 +19,11 @@ dffbs = pd.read_csv("FBSchedulesSOS.csv", usecols=["TEAM", "FBRank"])
 dfpfnsos = pd.read_csv("PFNSOS.csv", usecols=["Team", "PFNSOSRank"])
 dfdk = pd.read_csv("DKSOS.csv", usecols=["Team", "DKRank"])
 dfplayer = pd.read_csv("Player List.csv", usecols=["Rank", "Player", "Team", "POS"])
+df_laghezza = pd.read_csv("laghezzaranks.csv")
 # noinspection PyArgumentList
-teammap = pd.read_csv("TeamDict.csv", index_col=0, squeeze=True).to_dict()
+teammap = pd.read_csv("TeamDict.csv", index_col=0).squeeze().to_dict()
 
-dataframes = [dfpff, dfpfn, dfcbs, dfcbsoline, dffbs, dfpfnsos, dfdk, dfplayer]
+dataframes = [dfpff, dfpfn, dfcbs, dfcbsoline, dffbs, dfpfnsos, dfdk, dfplayer, df_laghezza]
 
 for df in dataframes:
     convert_column_headers_to_proper_case(df)
@@ -35,7 +36,7 @@ dffbs["Team"] = dffbs["Team"].map(lambda x: teammap.get(x, x))
 dfpfnsos["Team"] = dfpfnsos["Team"].map(lambda x: teammap.get(x, x))
 dfdk["Team"] = dfdk["Team"].map(lambda x: teammap.get(x, x))
 
-dflist = [dfplayer]
+dflist = [dfplayer, df_laghezza]
 for index, df in enumerate(dflist):
     df.replace(r"[^\w\s]|_\*", "", regex=True, inplace=True)
     df.replace(" Jr", "", regex=True, inplace=True)
@@ -60,17 +61,23 @@ df_sos[cols2] = df_sos[cols2].apply(pd.to_numeric, errors="coerce")
 df_sos["Sosrank"] = df_sos.iloc[:, 1:3].mean(axis=1, numeric_only=True)
 
 df_players = dfplayer.merge(
-    df_oline[["Team", "Olinerank"]], on=["Team"], how="left"
-).merge(df_sos[["Team", "Sosrank"]], on=["Team"], how="left")
+    df_oline[["Team", "Olinerank"]], on=["Team"], how="left")\
+    .merge(df_laghezza[['Name', 'Ranking']], left_on='Player', right_on='Name', how='left')\
+    .merge(df_sos[["Team", "Sosrank"]], on=["Team"], how="left")
+
+# # Drop the 'name' column as it's no longer needed
+# df_players = df_players.drop(columns=['Name'], inplace=True)
+print(df_players.columns)
+
 df_players = df_players.rename(
-    columns={"Rank": "ADP", "Player": "Name", "Pos": "Position"}
+    columns={"Rank": "ADP", "Player": "Name", "Pos": "Position", "Ranking": "LagRank"}
 )
 
 cols3 = ["ADP", "Olinerank", "Sosrank"]
 df_players[cols3] = df_players[cols3].apply(pd.to_numeric, errors="coerce")
 df_players["PlayerScore"] = df_players[["ADP", "Olinerank", "Sosrank"]].sum(axis=1)
 sorted = df_players.sort_values(by=["PlayerScore"])
-neworder = ["Name", "Team", "Position", "Olinerank", "Sosrank", "PlayerScore"]
-sorted = sorted.reindex(columns=neworder)
+neworder = ["Name", "Team", "Position", "Olinerank", "Sosrank", "LagRank", "PlayerScore"]
+# sorted = sorted.reindex(columns=neworder)
 
 sorted.to_csv("FantasyFootballRanks.csv", index=False)
