@@ -65,9 +65,8 @@ df_players = dfplayer.merge(
     .merge(df_laghezza[['Name', 'Ranking']], left_on='Player', right_on='Name', how='left')\
     .merge(df_sos[["Team", "Sosrank"]], on=["Team"], how="left")
 
-# # Drop the 'name' column as it's no longer needed
-# df_players = df_players.drop(columns=['Name'], inplace=True)
-print(df_players.columns)
+# Drop the 'name' column as it's no longer needed
+df_players.drop(columns=['Name'], inplace=True)
 
 df_players = df_players.rename(
     columns={"Rank": "ADP", "Player": "Name", "Pos": "Position", "Ranking": "LagRank"}
