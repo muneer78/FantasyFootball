@@ -6,6 +6,10 @@ df = pd.read_csv("FantasyPros_Fantasy_Football_2023_Offense_Snap_Count_Analysis.
 # Read the "fbexcluded.csv" file into a dataframe
 df_excluded = pd.read_csv("fbexcluded.csv")
 
+def clean_player_data(df):
+    df.replace(r"[^\w\s]|_\*| Jr| III", "", regex=True, inplace=True)
+    return df
+
 # Create a list of excluded player names
 excluded_players = df_excluded["PLAYER NAME"].tolist()
 
@@ -14,6 +18,9 @@ df1 = df[df['Pos'] == 'QB']
 
 # Create dataframe 2 where Pos is WR, RB, or TE
 df2 = df[df['Pos'].isin(['WR', 'RB', 'TE'])]
+
+df1 = clean_player_data(df1)
+df2 = clean_player_data(df2)
 
 # Filter out players from df1 and df2 if their names are in the excluded list
 df1_filtered = df1[~df1["Player"].isin(excluded_players)]
