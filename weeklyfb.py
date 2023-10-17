@@ -103,12 +103,16 @@ with open("fbpickups.csv", "a", newline="") as csvfile:
         csvfile.write(','.join(map(str, row.values)) + "\n")
 
 titles = ['QB', 'RB', 'WR', 'TE']
+
+print("Here are the weekly recommendations:")
+print()
 for title, df in zip(titles, dfs):
     column_name = 'Player'  # Replace with the column name you want to extract
     selected_column = df[column_name].head(5)  # Extract the first 5 values
 
     # Format the output with the specified title
     output = f"{title}: {', '.join(selected_column.astype(str))}"
+
 
     # Print the result
     print(output)
