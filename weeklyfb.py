@@ -61,6 +61,7 @@ dfs = [df1_filtered, df2_filtered, df3_filtered, df4_filtered]
 for i in range(len(dfs)):
     dfs[i] = sort_data(dfs[i])
 
+
 # Write df1 to a CSV file with a title
 with open("fbpickups.csv", "w", newline="") as csvfile:
     # Write title for df1
@@ -100,3 +101,17 @@ with open("fbpickups.csv", "a", newline="") as csvfile:
     # Write data for df4
     for _, row in df4_filtered.head(5).iterrows():
         csvfile.write(','.join(map(str, row.values)) + "\n")
+
+titles = ['QB', 'RB', 'WR', 'TE']
+for title, df in zip(titles, dfs):
+    column_name = 'Player'  # Replace with the column name you want to extract
+    selected_column = df[column_name].head(5)  # Extract the first 5 values
+
+    # Format the output with the specified title
+    output = f"{title}: {', '.join(selected_column.astype(str))}"
+
+    # Print the result
+    print(output)
+
+    # Print a blank line to separate the outputs
+    print()
